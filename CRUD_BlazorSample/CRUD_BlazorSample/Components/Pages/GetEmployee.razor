@@ -1,0 +1,38 @@
+﻿@page "/employees"
+@using CRUD_BlazorSample.Model
+
+@inject EmployeeService EmployeeService
+
+<h3>GetEmployee</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Salary</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Employees)
+        {
+            <tr>
+                <td>@employee.Id</td>
+                <td>@employee.Name</td>
+                <td>@employee.Department</td>
+                <td>@employee.Salary</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    List<Employee> Employees { get; set; } = new List<Employee>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Employees = await EmployeeService.GetEmployees();
+    }
+}
