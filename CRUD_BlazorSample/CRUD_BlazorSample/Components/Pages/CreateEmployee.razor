@@ -1,0 +1,38 @@
+﻿@page "/create-employee"
+@using CRUD_BlazorSample.Model
+
+
+<h3>Create Employee</h3>
+
+<form>
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" id="name" @bind="NewEmployee.Name">
+    </div>
+    <div class="form-group">
+        <label for="department">Department:</label>
+        <input type="text" class="form-control" id="department" @bind="NewEmployee.Department">
+    </div>
+    <div class="form-group">
+        <label for="salary">Salary:</label>
+        <input type="number" class="form-control" id="salary" @bind="NewEmployee.Salary">
+    </div>
+    <!-- Add other input fields as needed -->
+    <button type="submit" class="btn btn-primary" @onclick="CreatesEmployee">Create</button>
+</form>
+
+@code {
+    Employee NewEmployee { get; set; } = new Employee();
+
+    [Inject]
+    EmployeeService EmployeeService { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    private async Task CreatesEmployee()
+    {
+        await EmployeeService.CreateEmployee(NewEmployee);
+        NavigationManager.NavigateTo("/employees");
+    }
+}
