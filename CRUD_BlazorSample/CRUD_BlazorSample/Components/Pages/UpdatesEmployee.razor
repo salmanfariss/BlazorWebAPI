@@ -1,0 +1,58 @@
+﻿@page "/update-employee/{Id}"
+@using CRUD_BlazorSample.Model
+
+<h3>Update Employee</h3>
+
+@if (Employee == null)
+{
+        <p>ID not found.</p>
+}
+else
+{
+    <EditForm FormName="EmployeeForm" Model="@Employee" OnValidSubmit="@UpdateEmployee">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" @bind="Employee.Name">
+            </div>
+            <div class="form-group">
+                <label for="name">Department:</label>
+                <input type="text" class="form-control" id="department" @bind="Employee.Department">
+            </div>
+            <div class="form-group">
+                <label for="name">Salary:</label>
+                <input type="text" class="form-control" id="salary" @bind="Employee.Salary">
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    Employee Employee { get; set; }
+
+    [Inject]
+    EmployeeService EmployeeService { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Convert the string Id to int before passing it to the service method
+        if (int.TryParse(Id, out int employeeId))
+        {
+            Employee = await EmployeeService.GetEmployee(employeeId);
+        }
+    }
+
+    private async Task UpdateEmployee()
+    {
+        if (Employee != null)
+        {
+            await EmployeeService.UpdateEmployee(Employee);
+            NavigationManager.NavigateTo("/employees");
+        }
+    }
+}

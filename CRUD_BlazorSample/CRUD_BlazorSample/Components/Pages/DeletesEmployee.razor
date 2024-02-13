@@ -1,0 +1,31 @@
+﻿@page "/delete-employee/{Id}"
+@using CRUD_BlazorSample.Model
+
+<h3>Delete Employee</h3>
+
+<p>Are you sure you want to delete this employee?</p>
+
+<button type="button" class="btn btn-danger" @onclick="DeleteEmployee">Delete</button>
+<button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    [Inject]
+    EmployeeService EmployeeService { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    private async Task DeleteEmployee()
+    {
+        await EmployeeService.DeleteEmployee(Id);
+        NavigationManager.NavigateTo("/employees");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/employees");
+    }
+}
