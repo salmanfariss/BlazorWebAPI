@@ -1,0 +1,45 @@
+﻿@page "/create-employee"
+@using CRUD_BlazorSample.Model
+
+<h3>Create Employee</h3>
+
+<EditForm FormName="EmployeeForm"  Model="@NewEmployee" OnValidSubmit="CreatesEmployee">
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <InputText class="form-control" @bind-Value="NewEmployee.Name" />
+    </div>
+    <div class="form-group">
+        <label for="department">Department:</label>
+        <InputText class="form-control" @bind-Value="NewEmployee.Department" />
+    </div>
+    <div class="form-group">
+        <label for="salary">Salary:</label>
+        <InputNumber class="form-control" @bind-Value="NewEmployee.Salary" />
+    </div>
+    <!-- Add other input fields as needed -->
+    <button type="submit" class="btn btn-primary">Create</button>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm(FormName = "EmployeeForm")]
+    Employee NewEmployee { get; set; } = new Employee();
+
+    [Inject]
+    EmployeeService EmployeeService { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    private async Task CreatesEmployee()
+    {
+        try
+        {
+            await EmployeeService.CreateEmployee(NewEmployee);
+            NavigationManager.NavigateTo("/employees");
+        }
+        catch (HttpRequestException ex)
+        {
+            // Handle the error
+        }
+    }
+}

@@ -1,0 +1,66 @@
+﻿@page "/update-employeebyid"
+@using CRUD_BlazorSample.Model
+
+<h3>Update Employee</h3>
+
+<EditForm FormName="UpdateEmployeeById" OnSubmit="@GetDetailsById" Model="@EmployeeId">
+    <label>Enter a Id to Get the Employee Detail : </label>
+    <InputNumber @bind-Value="EmployeeId.Employee_Id" class="form-control"></InputNumber>
+    <button type="submit" class="btn btn-danger">Get</button>
+</EditForm>
+
+@if (Employee != null)
+{
+    <EditForm FormName="UpdateEmployeeForm" Model="@Employee" OnSubmit="@UpdateEmployee">
+            
+        <div class="form-group">
+            <label for="Id">Id:</label>
+            <InputNumber class="form-control" @bind-Value="Employee.Id" />
+        </div>
+            <div class="form-group">
+                <label for="name">Name:</label>
+            <InputText class="form-control" @bind-Value="Employee.Name" />
+            </div>
+            <div class="form-group">
+                <label for="name">Department:</label>
+            <InputText class="form-control" @bind-Value="Employee.Department" />
+            </div>
+            <div class="form-group">
+                <label for="name">Salary:</label>
+                <InputNumber class="form-control" @bind-Value="Employee.Salary" />
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    [SupplyParameterFromForm(FormName = "UpdateEmployeeForm")]
+    Employee Employee { get; set; }
+
+    [Inject]
+    EmployeeService EmployeeService { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    [SupplyParameterFromForm(FormName = "UpdateEmployeeById")]
+    private SearchId EmployeeId { get; set; } = new SearchId();
+
+    private async Task GetDetailsById()
+    {
+        Employee = await EmployeeService.GetEmployee(EmployeeId.Employee_Id);
+        Employee.Id = EmployeeId.Employee_Id;
+    }
+
+    private async Task UpdateEmployee()
+    {
+        if (Employee != null)
+        {
+            await EmployeeService.UpdateEmployee(Employee);
+            NavigationManager.NavigateTo("/employees");
+        }
+    }
+}

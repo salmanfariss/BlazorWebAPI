@@ -1,0 +1,38 @@
+﻿@page "/delete-employee"
+@using CRUD_BlazorSample.Model
+
+<h3>Delete Employee</h3>
+
+<EditForm FormName="DeleteForm" OnSubmit="@DeleteEmployee" Model="@EmployeeId">
+    <label>Enter a Id to Delete the Employee Detail : </label>
+    <InputNumber @bind-Value="EmployeeId.Employee_Id" class="form-control"></InputNumber>
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    [Inject]
+    EmployeeService EmployeeService { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    [SupplyParameterFromForm(FormName = "DeleteForm")]
+    private SearchId EmployeeId { get; set; } = new SearchId();
+
+    private async Task DeleteEmployee()
+    {
+        await EmployeeService.DeleteEmployee(EmployeeId.Employee_Id);
+        NavigationManager.NavigateTo("/employees");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/employees");
+    }
+    
+}

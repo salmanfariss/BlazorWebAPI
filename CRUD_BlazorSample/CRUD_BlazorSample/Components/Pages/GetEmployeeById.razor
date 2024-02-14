@@ -1,0 +1,39 @@
+﻿@page "/employeebyid"
+@using CRUD_BlazorSample.Model
+
+
+<EditForm FormName="GetEmployeeId" OnSubmit="@GetEmployeeFromId" Model="@EmployeeId">
+    <label>Enter a Id to Get the Employee Detail : </label>
+    <InputNumber @bind-Value="EmployeeId.Employee_Id" class="form-control"></InputNumber>
+    <button type="submit" class="btn btn-danger">Get</button>
+</EditForm>
+
+@if (Employee != null)
+{
+    <h3>Employee Details</h3>
+    <div>
+        <p><strong>Id:</strong> @Employee.Id</p>
+        <p><strong>Name:</strong> @Employee.Name</p>
+        <p><strong>Department:</strong> @Employee.Department</p>
+        <p><strong>Salary:</strong> @Employee.Salary</p>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    Employee Employee { get; set; }
+
+    [Inject]
+    EmployeeService EmployeeService { get; set; }
+
+    [SupplyParameterFromForm(FormName = "GetEmployeeId")]
+    private SearchId EmployeeId { get; set; } = new SearchId();
+
+    private async Task GetEmployeeFromId()
+    {
+        Employee = await EmployeeService.GetEmployee(EmployeeId.Employee_Id);
+        StateHasChanged();
+    }
+}
